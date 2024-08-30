@@ -12,6 +12,8 @@ dist
 dist-ssr
 dist-electron
 release
+package-lock.json
+yarn.lock
 *.local
 
 # Editor directories and files
