@@ -4,7 +4,7 @@
   "appId": "electron-vite-pro",
   "asar": true,
   "icon": "public/favicon.ico",
-  "productName": "szlc-lh-Pro",
+  "productName": "SakuraTools",
   "directories": {
     "output": "release/${version}"
   },

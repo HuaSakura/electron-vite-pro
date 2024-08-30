@@ -1,5 +1,30 @@
+<template>
+  <div class="app">
+    <div class="window-operate">
+      <div ref="titleBar" class="window-operate-left"></div>
+      <div class="window-operate-right">
+        <div class="window-operate-icon" @click="TopOperation">
+          <PushpinOutlined v-if="TopType"/>
+          <PushpinFilled v-else/>
+        </div>
+        <div class="window-operate-icon" @click="minimizeWindow">
+          <MinusOutlined/>
+        </div>
+        <div class="window-operate-icon" @click="FullScreen">
+          <FullscreenOutlined v-if="FullScreenType"/>
+          <FullscreenExitOutlined v-else/>
+        </div>
+        <div class="window-operate-icon close" @click="CloseWindow">
+          <CloseOutlined/>
+        </div>
+      </div>
+    </div>
+    <router-view :key="route.fullPath"/>
+  </div>
+</template>
+
 <script lang="ts">
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {defineComponent, ref} from "vue";
 import {useRoute} from "vue-router";
 import {
   CloseOutlined,
@@ -9,7 +34,6 @@ import {
   PushpinFilled,
   PushpinOutlined
 } from "@ant-design/icons-vue"
-import {useMouse, useMousePressed, watchPausable} from "@vueuse/core";
 
 export default defineComponent({
   name: "App",
@@ -26,31 +50,23 @@ export default defineComponent({
     const FullScreenType = ref(true as boolean);
     const TopType = ref(true as boolean);
     const titleBar = ref(null as any);
-    const {pressed} = useMousePressed({target: titleBar})
-    const {x, y} = useMouse({touch: false})
-
-    onMounted(() => {
-      pause()
-    })
-
-    watch(() => pressed.value, (newValue) => {
-      if (newValue == true) {
-        resume()
-      } else if (newValue == false) {
-        pause()
-      }
-    })
-
-    const {pause, resume} = watchPausable(x, () => {
-      console.log(x.value, y.value)
-    })
 
     function FullScreen() {
       FullScreenType.value = !FullScreenType.value;
+      window.ipcRenderer.send('full-screen-type', !FullScreenType.value)
     }
 
     function TopOperation() {
       TopType.value = !TopType.value;
+      window.ipcRenderer.send('top-type', !TopType.value)
+    }
+
+    function CloseWindow(){
+      window.ipcRenderer.send('close-window')
+    }
+
+    function minimizeWindow(){
+      window.ipcRenderer.send('minimize-window')
     }
 
     return {
@@ -58,37 +74,14 @@ export default defineComponent({
       TopType,
       titleBar,
       FullScreen,
+      CloseWindow,
       TopOperation,
-      FullScreenType
+      FullScreenType,
+      minimizeWindow
     }
   }
 })
 </script>
-
-<template>
-  <div class="app">
-    <div class="window-operate">
-      <div ref="titleBar" class="window-operate-left"></div>
-      <div class="window-operate-right">
-        <div class="window-operate-icon" @click="TopOperation">
-          <PushpinOutlined v-if="TopType"/>
-          <PushpinFilled v-else/>
-        </div>
-        <div class="window-operate-icon">
-          <MinusOutlined/>
-        </div>
-        <div class="window-operate-icon" @click="FullScreen">
-          <FullscreenOutlined v-if="FullScreenType"/>
-          <FullscreenExitOutlined v-else/>
-        </div>
-        <div class="window-operate-icon close">
-          <CloseOutlined/>
-        </div>
-      </div>
-    </div>
-    <router-view :key="route.fullPath"/>
-  </div>
-</template>
 
 <style scoped lang="less">
 .app {
@@ -104,12 +97,13 @@ export default defineComponent({
     z-index: 5000;
 
     .window-operate-left {
-      width: 80%;
+      width: 100%;
+      -webkit-app-region: drag;
     }
 
     .window-operate-right {
       display: flex;
-      width: 20%;
+      width: 205px;
 
       &:hover {
         .window-operate-icon {
@@ -135,20 +129,12 @@ export default defineComponent({
         }
 
         &:hover {
-          background-color: #4b4b4b;
-        }
-
-        &:active {
           background-color: #242424;
         }
       }
 
       .close {
         &:hover {
-          background-color: #ff5d5d;
-        }
-
-        &:active {
           background-color: #FF0000;
         }
       }
