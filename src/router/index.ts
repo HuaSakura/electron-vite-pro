@@ -10,21 +10,6 @@ const routes: any[] = [
         name: 'index',
         component: () => import('../views/index.vue')
     },
-    {
-        path: '/setting',
-        name: 'setting',
-        component: () => import('../views/setting/setting.vue')
-    },
-    {
-        path: '/faceCollection',
-        name: 'faceCollection',
-        component: () => import('../views/faceCollection.vue')
-    },
-    {
-        path: '/weighingInterface',
-        name: 'weighingInterface',
-        component: () => import('../views/weighingInterface.vue')
-    },
 ]
 
 const router: Router = createRouter({
