@@ -2,7 +2,7 @@
 
 此项目基于 [Electron⚡️Vite](https://electron-vite.github.io/) 创建的
 
-这个项目是留一个基础的壳子，还有一个正在进行中的项目[Sakura-Tools](https://github.com/HuaSakura/Sakura-Tools),欢迎去看看
+这个项目是留一个基础的壳子，还有一个正在进行中的项目[Sakura-Tools](https://github.com/HuaSakura/Sakura-Tools)，欢迎去看看
 
 由于Electron资源在内网使用比较麻烦，需要使用霍格沃兹网络（切需要把终端设置网络代理），所以在初始化项目是需使用如下命令进行创建
 
